@@ -85,6 +85,25 @@ Walks every repo and interactively reviews branches whose upstream has been dele
 
 Uses `git branch -D` so it works on squash-merged branches whose commits are not reachable from the active branch. The default answer is "no" if you press Enter, so it is safe to run on a tired Monday morning.
 
+### `git_size_all.sh`
+
+Lists every repo with its working tree size and `.git` size, sorted by total descending. Useful for finding bloated checkouts (errant `node_modules`, model checkpoints, leftover build artifacts).
+
+```
+./git_size_all.sh
+```
+
+Output looks like:
+
+```
+REPO                                            TOTAL          .git
+some-frontend                                   842M          124M
+some-backend                                    310M           42M
+small-utility                                   18M           2.1M
+
+Total: 1.2G
+```
+
 ## Planned
 
 Companions I plan to add to this repo:

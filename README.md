@@ -104,6 +104,16 @@ small-utility                                   18M           2.1M
 Total: 1.2G
 ```
 
+### `git_pr_review.sh`
+
+Given a GitHub PR URL, finds the matching local clone, checks out the PR branch with `gh pr checkout`, and lands you ready to review. Saves the cd-and-checkout dance every code review.
+
+```
+./git_pr_review.sh https://github.com/owner/repo/pull/123
+```
+
+Searches the current directory and `~/Developer/` by default. Override with `GIT_REVIEW_SEARCH_PATHS` (colon-separated paths). Requires `gh` CLI.
+
 ## Planned
 
 Companions I plan to add to this repo:

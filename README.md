@@ -40,11 +40,21 @@ ln -s ~/git-scripts/git_fetch_all.sh /usr/local/bin/git-fetch-all
 - Diverged branches are warned about, never overwritten.
 - Local branches whose upstream was pruned (`[gone]`) are flagged but not auto-deleted — squash-merged commits would be unreachable, so you decide.
 
+### `git_my_commits.sh`
+
+Aggregates the commits you authored across every repo under the current directory in the last N days. Output is grouped by repo. Useful for standup notes and weekly reports.
+
+```
+./git_my_commits.sh           # last 7 days (default)
+./git_my_commits.sh 30        # last 30 days
+```
+
+Identifies "your" commits using `git config --global user.email`.
+
 ## Planned
 
 Companions I plan to add to this repo:
 
-- `git_status_all.sh` — read-only health dashboard: branch, dirty/clean, ahead/behind across every repo.
-- `git_run_all.sh <command...>` — run an arbitrary command in each repo (e.g. `npm install`, `npm run lint`).
-- `git_my_commits.sh [days]` — your commits across all repos in the last N days; useful for standups.
-- `git_pr_all.sh` — list open PRs across all repos via `gh`.
+- `git_status_all.sh` - read-only health dashboard: branch, dirty/clean, ahead/behind across every repo.
+- `git_run_all.sh <command...>` - run an arbitrary command in each repo (e.g. `npm install`, `npm run lint`).
+- `git_pr_all.sh` - list open PRs across all repos via `gh`.

@@ -75,6 +75,16 @@ git_clone_all.sh my-org
 
 Useful for new-machine setup or onboarding a teammate. Requires `gh` CLI.
 
+### `git_clean_branches.sh`
+
+Walks every repo and interactively reviews branches whose upstream has been deleted (the squash-merged PR ghosts that `git_fetch_all.sh` flags as `[gone]`). Shows the last commit for each candidate and asks before deleting.
+
+```
+./git_clean_branches.sh
+```
+
+Uses `git branch -D` so it works on squash-merged branches whose commits are not reachable from the active branch. The default answer is "no" if you press Enter, so it is safe to run on a tired Monday morning.
+
 ## Planned
 
 Companions I plan to add to this repo:

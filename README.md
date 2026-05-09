@@ -1,50 +1,52 @@
 # git-scripts
 
-Bash utilities I use to wrangle many local git repos at once.
+Bash utilities for working across many local git repos at once. Each script lives in its own folder with a dedicated README and usage examples.
 
 ## Scripts
 
-### `git_fetch_all.sh`
+| Script | What it does |
+|---|---|
+| [`git_fetch_all/`](./git_fetch_all/) | Sync every repo. Stash, fetch with prune, fast-forward every relevant branch, restore. The morning sync command. |
+| [`git_my_commits/`](./git_my_commits/) | Aggregate your commits across every repo over the last N days. Standup helper. |
+| [`git_pr_all/`](./git_pr_all/) | List open PRs across every GitHub repo. Filters for yours, ones awaiting your review, drafts. |
+| [`git_clone_all/`](./git_clone_all/) | Bulk-clone every repo in a GitHub org or user account. New-machine setup. |
+| [`git_clean_branches/`](./git_clean_branches/) | Interactive cleanup of `[gone]` branches (squash-merged PR ghosts). |
+| [`git_size_all/`](./git_size_all/) | List every repo by working tree + `.git` size, sorted descending. Find what's eating your SSD. |
+| [`git_pr_review/`](./git_pr_review/) | Given a PR URL, find the local clone and check the PR branch out for review. |
+| [`git_open/`](./git_open/) | Open the current repo (or a file and line) on GitHub in your browser. |
 
-Walks every `.git` directory under the current working directory and brings each repo up to date. For each repo it:
+## Setup
 
-- Stashes uncommitted changes (with `-u`, so untracked files are kept) and restores them at the end.
-- Runs a single `git fetch --prune origin` — pulls every remote ref and removes remote-tracking branches that were deleted upstream.
-- Fast-forwards the active branch.
-- Always fast-forwards `development`, `production`, and `staging` (creating them locally if they don't exist yet) — even when they aren't checked out.
-- Sweeps every other local branch with an upstream and fast-forwards it; flags diverged branches and `[gone]` upstreams.
-- Deletes local branches already merged into the active branch (excluding the three pinned ones).
-- Prints per-repo size and elapsed time.
-
-#### Usage
-
-```
-./git_fetch_all.sh                  # pull current branch in every repo
-./git_fetch_all.sh <branch-name>    # checkout + pull <branch-name>;
-                                    # falls back to development if not on remote
-```
-
-Run from the directory that contains your repos (it descends recursively to find every `.git`).
-
-#### Install
+Clone the repo, then symlink each script you want into your `PATH`:
 
 ```
 git clone git@github.com:kapoorsahil/git-scripts.git ~/git-scripts
-ln -s ~/git-scripts/git_fetch_all.sh /usr/local/bin/git-fetch-all
+
+ln -s ~/git-scripts/git_fetch_all/git_fetch_all.sh        /usr/local/bin/git-fetch-all
+ln -s ~/git-scripts/git_my_commits/git_my_commits.sh      /usr/local/bin/git-my-commits
+ln -s ~/git-scripts/git_pr_all/git_pr_all.sh              /usr/local/bin/git-pr-all
+ln -s ~/git-scripts/git_clone_all/git_clone_all.sh        /usr/local/bin/git-clone-all
+ln -s ~/git-scripts/git_clean_branches/git_clean_branches.sh /usr/local/bin/git-clean-branches
+ln -s ~/git-scripts/git_size_all/git_size_all.sh          /usr/local/bin/git-size-all
+ln -s ~/git-scripts/git_pr_review/git_pr_review.sh        /usr/local/bin/git-pr-review
+ln -s ~/git-scripts/git_open/git_open.sh                  /usr/local/bin/git-open
 ```
 
-#### Notes
+See each subfolder's README for script-specific docs and configuration knobs.
 
-- Tested on macOS (zsh / bash 3.2). Should work on Linux without changes.
-- Color output auto-disables when stdout isn't a TTY, or set `NO_COLOR=1`.
-- Diverged branches are warned about, never overwritten.
-- Local branches whose upstream was pruned (`[gone]`) are flagged but not auto-deleted — squash-merged commits would be unreachable, so you decide.
+## Notes
+
+- All scripts target macOS (zsh / bash 3.2) and Linux.
+- Color output auto-disables when stdout is not a TTY, or set `NO_COLOR=1`.
+- Several scripts require the `gh` CLI authenticated (`gh auth status`).
 
 ## Planned
 
 Companions I plan to add to this repo:
 
-- `git_status_all.sh` — read-only health dashboard: branch, dirty/clean, ahead/behind across every repo.
-- `git_run_all.sh <command...>` — run an arbitrary command in each repo (e.g. `npm install`, `npm run lint`).
-- `git_my_commits.sh [days]` — your commits across all repos in the last N days; useful for standups.
-- `git_pr_all.sh` — list open PRs across all repos via `gh`.
+- `git_status_all/` - read-only health dashboard (branch, dirty/clean, ahead/behind across every repo).
+- `git_run_all/` - run an arbitrary shell command in each repo (`npm install`, `npm run lint`, etc.).
+
+## Contributing
+
+If you have a script you want to add, or an improvement to an existing one, open a PR. New scripts should follow the same conventions as the existing ones: each in its own folder with a README, color output that auto-disables off-TTY, and a `find . -type d -name .git` sweep for multi-repo operations.

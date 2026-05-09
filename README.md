@@ -64,6 +64,17 @@ Lists open pull requests across every GitHub repo under the current directory us
 
 Requires the `gh` CLI authenticated (`gh auth status`).
 
+### `git_clone_all.sh`
+
+Clones every repo in a GitHub org or user account into the current directory. Skips repos that are already cloned. Uses SSH URLs.
+
+```
+mkdir ~/my-org && cd ~/my-org
+git_clone_all.sh my-org
+```
+
+Useful for new-machine setup or onboarding a teammate. Requires `gh` CLI.
+
 ## Planned
 
 Companions I plan to add to this repo:

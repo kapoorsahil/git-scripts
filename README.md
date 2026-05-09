@@ -114,6 +114,18 @@ Given a GitHub PR URL, finds the matching local clone, checks out the PR branch 
 
 Searches the current directory and `~/Developer/` by default. Override with `GIT_REVIEW_SEARCH_PATHS` (colon-separated paths). Requires `gh` CLI.
 
+### `git_open.sh`
+
+Opens the current repo on GitHub in your default browser. With a path argument, opens that file on the current branch; append `:LINE` to focus a specific line.
+
+```
+./git_open.sh                          # repo home
+./git_open.sh src/main.ts              # file
+./git_open.sh src/main.ts:42           # file at line 42
+```
+
+Useful for sharing code in Slack or jumping to the GitHub view from your terminal.
+
 ## Planned
 
 Companions I plan to add to this repo:

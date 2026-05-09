@@ -51,10 +51,22 @@ Aggregates the commits you authored across every repo under the current director
 
 Identifies "your" commits using `git config --global user.email`.
 
+### `git_pr_all.sh`
+
+Lists open pull requests across every GitHub repo under the current directory using `gh pr list`. Replaces tab-hunting in the GitHub UI every morning.
+
+```
+./git_pr_all.sh                # all open PRs
+./git_pr_all.sh --mine         # PRs you authored
+./git_pr_all.sh --reviewing    # PRs requesting your review
+./git_pr_all.sh --draft        # only drafts
+```
+
+Requires the `gh` CLI authenticated (`gh auth status`).
+
 ## Planned
 
 Companions I plan to add to this repo:
 
 - `git_status_all.sh` - read-only health dashboard: branch, dirty/clean, ahead/behind across every repo.
 - `git_run_all.sh <command...>` - run an arbitrary command in each repo (e.g. `npm install`, `npm run lint`).
-- `git_pr_all.sh` - list open PRs across all repos via `gh`.

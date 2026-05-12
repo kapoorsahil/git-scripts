@@ -22,11 +22,31 @@ branch_exists_remote() {
 }
 
 prune_merged_branches() {
-    local merged
-    merged=$(git branch --merged | grep -Ev "(^\*|development|production|staging)")
-    if [ -n "$merged" ]; then
-        echo "$merged" | xargs git branch -d
-        echo "${DIM}Pruned merged branches.${RESET}"
+    local current_branch
+    current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+    # Branches checked out in any worktree cannot be deleted; collect them
+    # so we can skip them cleanly instead of producing errors.
+    local worktree_branches
+    worktree_branches=$(git worktree list --porcelain 2>/dev/null \
+        | awk '/^branch refs\/heads\// { sub("refs/heads/", "", $2); print $2 }')
+
+    local to_delete=()
+    local br
+    while IFS= read -r br; do
+        case "$br" in
+            development|production|staging) continue ;;
+        esac
+        [ "$br" = "$current_branch" ] && continue
+        if [ -n "$worktree_branches" ] && printf '%s\n' "$worktree_branches" | grep -qx "$br"; then
+            continue
+        fi
+        to_delete+=("$br")
+    done < <(git for-each-ref --merged=HEAD --format='%(refname:short)' refs/heads/)
+
+    if [ "${#to_delete[@]}" -gt 0 ]; then
+        git branch -d "${to_delete[@]}" > /dev/null 2>&1
+        echo "${DIM}Pruned ${#to_delete[@]} merged branches.${RESET}"
     fi
 }
 
@@ -166,7 +186,11 @@ process_repo() {
     cd "$repo_dir" || return 1
 
     local size
-    size=$(du -sh "$repo_dir" 2>/dev/null | awk '{print $1}')
+    if [ -d "$repo_dir/.git" ]; then
+        size=$(du -sh "$repo_dir/.git" 2>/dev/null | awk '{print $1}')
+    else
+        size=$(du -sh "$repo_dir" 2>/dev/null | awk '{print $1}')
+    fi
 
     if ! git remote | grep -q .; then
         echo "${DIM}(no remote — skipped)  ·  Size: ${size:-?}${RESET}"
